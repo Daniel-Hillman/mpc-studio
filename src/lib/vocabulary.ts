@@ -17,6 +17,9 @@ export const ROLE_WORDS = {
 
 export type RoleKey = keyof typeof ROLE_WORDS
 
+/** The five roles a sounding note can have (excludes the original/no-pad overlays). */
+export type NoteRoleKey = 'root' | 'chord' | 'scale' | 'passing' | 'outside'
+
 /** Short forms for tight surfaces like pad faces. */
 export const COMPACT_ROLE_WORDS: Record<RoleKey, string> = {
   root: 'Root',
@@ -28,7 +31,7 @@ export const COMPACT_ROLE_WORDS: Record<RoleKey, string> = {
   noPad: 'No pad',
 }
 
-export const MELODY_ROLE_TO_KEY: Record<MelodyPadRole, RoleKey> = {
+export const MELODY_ROLE_TO_KEY: Record<MelodyPadRole, NoteRoleKey> = {
   home: 'root',
   strong: 'chord',
   safe: 'scale',

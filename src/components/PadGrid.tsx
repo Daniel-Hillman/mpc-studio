@@ -29,7 +29,6 @@ export function PadGrid({
   if (surfaceMode === 'keys') {
     return (
       <KeyboardSurface
-        activePads={activePads}
         pitchWindow={pitchWindow}
         padHighlights={padHighlights}
         highlightMode={highlightMode}

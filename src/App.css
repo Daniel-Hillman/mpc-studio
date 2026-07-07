@@ -761,27 +761,23 @@ main {
   pointer-events: none;
 }
 
-.keyboard-key {
+.piano-key {
   position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  align-items: end;
-  justify-items: center;
   min-width: 0;
   height: 100%;
-  border-width: 2px;
+  border: 2px solid #907c62;
   border-radius: 0 0 5px 5px;
-  padding: 0.5rem 0.2rem;
-  box-shadow: inset 0 -0.3rem 0 rgba(0, 0, 0, 0.14);
+  padding: 0;
+  cursor: pointer;
+  box-shadow: inset 0 -0.3rem 0 rgba(0, 0, 0, 0.12);
 }
 
-.keyboard-key.white {
+.piano-key.white {
   color: #2b251d;
-  border-color: #907c62;
-  background: #f4ecdf;
+  background: #faf5ea;
 }
 
-.keyboard-key.black {
+.piano-key.black {
   position: absolute;
   top: 0;
   left: var(--black-left);
@@ -795,88 +791,123 @@ main {
   border-radius: 0 0 4px 4px;
   background: #1f1b16;
   pointer-events: auto;
+  box-shadow: inset 0 -0.25rem 0 rgba(0, 0, 0, 0.35);
 }
 
-.keyboard-key.out-window {
+.piano-key:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
+  z-index: 3;
+}
+
+/* Keys with no MPC pad: heavily dimmed context */
+.piano-key.no-pad {
   cursor: not-allowed;
-  opacity: 0.36;
-  filter: grayscale(0.45);
+  opacity: 0.45;
+  filter: grayscale(0.6);
 }
 
-.keyboard-key.safe {
-  color: #f4efe5;
-  border-color: #1f5952;
-  background: var(--mint);
+.piano-key.no-pad.white {
+  background: #ece5d7;
 }
 
-.keyboard-key.root {
-  color: #1f170f;
-  border-color: #70410f;
+/* Role marker: a colored band painted on the key front */
+.key-marker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 13%;
+  border-top: 2px solid rgba(24, 20, 15, 0.35);
+  border-radius: 0 0 3px 3px;
+  pointer-events: none;
+}
+
+.piano-key.black .key-marker {
+  height: 18%;
+  border-radius: 0 0 2px 2px;
+}
+
+.piano-key.mark-root .key-marker {
   background: var(--gold);
 }
 
-.keyboard-key.chord,
-.keyboard-key.melody-strong {
-  color: #f4efe5;
-  border-color: #82352d;
+.piano-key.mark-chord .key-marker {
   background: var(--rose);
 }
 
-.keyboard-key.chord.root,
-.keyboard-key.melody-home {
-  color: #1f170f;
-  border-color: #70410f;
-  background: var(--gold);
-}
-
-.keyboard-key.melody-safe {
-  color: #f4efe5;
-  border-color: #1f5952;
+.piano-key.mark-scale .key-marker {
   background: var(--mint);
 }
 
-.keyboard-key.melody-passing {
-  color: #2b251d;
-  border-color: var(--line-strong);
+.piano-key.mark-passing .key-marker {
   background: #f4ecdf;
+  border: 2px dashed var(--line-strong);
+  border-bottom: 0;
 }
 
-.keyboard-key.melody-tension {
+.piano-key.mark-outside .key-marker {
+  background: #4a4238;
+}
+
+/* MPC pad chip: the P1-P16 bridge to the hardware */
+.key-chip {
+  position: absolute;
+  left: 50%;
+  bottom: 34%;
+  transform: translateX(-50%);
+  padding: 0.08rem 0.3rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: #efe6d6;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.piano-key.black .key-chip {
+  bottom: 26%;
+  border-color: #4a4238;
+  background: #3a342c;
   color: #f4efe5;
-  border-color: #2b251d;
-  background: #2d2a24;
+  font-size: 0.56rem;
 }
 
-.keyboard-key.original {
+/* Original pitch: dashed ring on the chip, never a repaint */
+.piano-key.original .key-chip {
   outline: 2px dashed var(--ink);
-  outline-offset: -0.42rem;
+  outline-offset: 2px;
 }
 
-.keyboard-key.pulse {
+.piano-key.black.original .key-chip {
+  outline-color: #f4efe5;
+}
+
+/* Note label: one per white key, octave form on C */
+.key-label {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.piano-key.pulse {
   transform: translateY(-3px);
   box-shadow:
-    inset 0 -0.35rem 0 rgba(0, 0, 0, 0.18),
-    0 0 0 3px rgba(33, 27, 21, 0.16);
+    inset 0 -0.3rem 0 rgba(0, 0, 0, 0.16),
+    0 0 0 3px rgba(182, 109, 25, 0.4);
 }
 
-.keyboard-key.black.pulse {
+.piano-key.black.pulse {
   transform: translateX(-50%) translateY(-3px);
-}
-
-.keyboard-key span,
-.keyboard-key small {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  opacity: 0.72;
-}
-
-.keyboard-key strong {
-  align-self: center;
-  font-family: var(--serif);
-  font-size: clamp(0.98rem, 1.8vw, 1.45rem);
 }
 
 .keyboard-caption {

@@ -59,7 +59,9 @@ describe('MPC Samplex shell', () => {
     expect(screen.getByText('Keys to try now')).toBeInTheDocument()
     expect(screen.queryByText('Pads to try now')).not.toBeInTheDocument()
     expect(container.querySelector('.keyboard-surface')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /C3 Pad 4/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /C3, Pad 4, Root, original pitch/i })).toBeInTheDocument()
+    expect(container.querySelectorAll('.piano-key.black').length).toBeGreaterThan(0)
+    expect(container.querySelectorAll('.piano-key .key-chip').length).toBe(16)
     expect(screen.getByText(/active 16 Levels window/i)).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Chords' }))

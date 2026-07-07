@@ -7,7 +7,7 @@ import {
   padToMidi,
   pitchClass,
 } from './music'
-import { melodyRoleFaceWord } from './vocabulary'
+import { MELODY_ROLE_TO_KEY, melodyRoleFaceWord, type NoteRoleKey } from './vocabulary'
 import type { ChordQualityId, ChordShape, MelodyPad, MelodyPadRole, PadNumber, PitchWindow } from '../types'
 
 export type PadHighlight = {
@@ -23,6 +23,32 @@ export const BLACK_KEY_PITCH_CLASSES = new Set([1, 3, 6, 8, 10])
 
 export function positiveInterval(interval: number): number {
   return ((interval % 12) + 12) % 12
+}
+
+export type KeyRole = NoteRoleKey | null
+
+/**
+ * Resolves the single visual role a keyboard key should show.
+ * Priority: melody role (in "all" mode) > root > chord tone > in scale.
+ * In chord mode, non-chord scale notes still show the scale marker for context.
+ */
+export function keyVisual(highlight: PadHighlight | undefined, mode: 'scale' | 'chord' | 'all'): KeyRole {
+  if (!highlight) {
+    return null
+  }
+  if (mode === 'all' && highlight.melodyRole) {
+    return MELODY_ROLE_TO_KEY[highlight.melodyRole]
+  }
+  if (highlight.isRoot) {
+    return 'root'
+  }
+  if (mode === 'chord' && highlight.isChord) {
+    return 'chord'
+  }
+  if (highlight.isSafe && (mode === 'scale' || mode === 'chord')) {
+    return 'scale'
+  }
+  return null
 }
 
 export function buildChordToneRoles(chordRoot: string, chordQuality: ChordQualityId): Map<number, string> {
