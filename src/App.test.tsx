@@ -45,7 +45,7 @@ describe('MPC Samplex shell', () => {
     fireEvent.click(screen.getByRole('button', { name: /Master key A Major/i }))
     fireEvent.click(screen.getByRole('button', { name: 'Chords' }))
 
-    expect(screen.getAllByText('A Major').length).toBeGreaterThan(1)
+    expect(screen.getAllByText(/A Major/).length).toBeGreaterThan(1)
     expect(screen.queryByRole('combobox', { name: 'Track key' })).not.toBeInTheDocument()
   })
 
@@ -76,25 +76,27 @@ describe('MPC Samplex shell', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Chords' }))
 
-    expect(screen.getByText('Scale and sample')).toBeInTheDocument()
-    expect(screen.getByText('1st to 7th chords')).toBeInTheDocument()
+    expect(screen.getByText('Chords in C Minor')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Color chords' })).toBeInTheDocument()
-    expect(screen.getByText('Build a loop')).toBeInTheDocument()
+    expect(screen.getByText('Your progression')).toBeInTheDocument()
+    expect(screen.getByText(/Tap \+ on a chord above/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Hear chord' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add starter loop' })).toBeInTheDocument()
     expect(screen.getByText('What next?')).toBeInTheDocument()
-    expect(screen.getByText(/Press:/)).toBeInTheDocument()
     expect(screen.getByText('fourth')).toBeInTheDocument()
-    expect(screen.getByText('Progression map')).toBeInTheDocument()
-    expect(screen.getByText('Play this on MPC')).toBeInTheDocument()
+    expect(screen.getByText(/MPC play sheet/)).toBeInTheDocument()
     expect(screen.getByText('Bass options')).toBeInTheDocument()
     expect(screen.getByText('Playbook')).toBeInTheDocument()
-    expect(screen.getByText(/tap the Add button under the pads/)).toBeInTheDocument()
+    expect(screen.getByText('Custom chord')).toBeInTheDocument()
+    expect(screen.queryByText('Scale and sample')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Transport')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: /Add Cm9/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Add Cm7 to progression/i }))
     expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Up' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Play Cm7/i })).toBeInTheDocument()
     expect(screen.getByText('Chord pads')).toBeInTheDocument()
-    expect(screen.getAllByText(/P4 \+ P6/).length).toBeGreaterThan(1)
-    expect(screen.queryByLabelText('Transport')).not.toBeInTheDocument()
+    expect(screen.getAllByText(/P4 \+ P7/).length).toBeGreaterThan(1)
   })
 
   it('shows melody role pads and phrase recipes on the melodies page', () => {

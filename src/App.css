@@ -92,7 +92,7 @@
 .template-button,
 .step,
 .mpc-pad,
-.keyboard-key,
+.piano-key,
 .segmented button {
   border: 1px solid var(--line);
   color: var(--text);
@@ -124,7 +124,7 @@
 .template-button:hover,
 .step:hover,
 .mpc-pad:hover,
-.keyboard-key:hover,
+.piano-key:hover,
 .segmented button:hover {
   border-color: var(--line-strong);
 }
@@ -146,7 +146,7 @@
 .template-button:focus-visible,
 .step:focus-visible,
 .mpc-pad:focus-visible,
-.keyboard-key:focus-visible,
+.piano-key:focus-visible,
 .segmented button:focus-visible,
 input:focus-visible,
 select:focus-visible {
@@ -377,17 +377,11 @@ main {
 }
 
 .chord-finder-layout {
-  grid-template-columns: minmax(19rem, 0.72fr) minmax(30rem, 1.18fr) minmax(20rem, 0.78fr);
+  grid-template-columns: minmax(20rem, 0.82fr) minmax(30rem, 1.18fr);
   grid-template-areas:
-    "setup palette recipe"
-    "coach coach recipe"
-    "pads pads recipe"
-    "progression progression recipe";
+    "palette pads"
+    "progression progression";
   align-items: start;
-}
-
-.chord-finder-setup {
-  grid-area: setup;
 }
 
 .chord-finder-palette {
@@ -398,16 +392,65 @@ main {
   grid-area: pads;
 }
 
-.chord-finder-coach {
-  grid-area: coach;
-}
-
-.chord-finder-recipe {
-  grid-area: recipe;
-}
-
 .chord-finder-progression {
   grid-area: progression;
+}
+
+.chord-chip-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.chord-chip-row .chord-chip {
+  flex: 1;
+  min-width: 0;
+}
+
+.chip-add {
+  flex: none;
+  width: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #efe6d6;
+  color: var(--ink);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chip-add:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.chip-add:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.custom-chord {
+  margin-top: 1rem;
+}
+
+.custom-chord summary,
+.play-sheet summary {
+  width: 100%;
+  justify-content: flex-start;
+  display: flex;
+}
+
+.play-sheet {
+  margin-top: 1.1rem;
+}
+
+.progression-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1rem;
 }
 
 .pad-actions {
@@ -1313,6 +1356,10 @@ output {
   grid-template-columns: repeat(auto-fit, minmax(5.2rem, 1fr));
 }
 
+.chord-palette.chord-degree-grid {
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+}
+
 .coach-stage-grid,
 .next-chord-grid,
 .recipe-grid {
@@ -1840,10 +1887,8 @@ button.mini-pad.active {
   .chord-finder-layout {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "setup palette"
-      "coach coach"
+      "palette palette"
       "pads pads"
-      "recipe recipe"
       "progression progression";
   }
 
@@ -2001,11 +2046,8 @@ button.mini-pad.active {
 
   .chord-finder-layout {
     grid-template-areas:
-      "setup"
       "palette"
-      "coach"
       "pads"
-      "recipe"
       "progression";
   }
 

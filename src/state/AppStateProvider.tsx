@@ -103,6 +103,7 @@ export interface AppState {
   removeChordFromProgression: (stepId: string) => void
   clearProgression: () => void
   auditionShape: (shape: ChordShape, strumMs?: number) => Promise<void>
+  auditionChord: (root: string, quality: ChordQualityId, strumMs?: number) => Promise<void>
   playSinglePad: (pad: PadNumber) => Promise<void>
 }
 
@@ -286,6 +287,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function auditionChord(root: string, quality: ChordQualityId, strumMs = 0) {
+    const shape = analyzeSixteenLevelsChord(root, quality, sampleRootMidi, originalPad).shapes[0]
+    await auditionShape(shape, strumMs)
+  }
+
   async function playSinglePad(pad: PadNumber) {
     const midi = padToMidi(sampleRootMidi, originalPad, pad)
     if (previewEnabled) {
@@ -452,6 +458,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     removeChordFromProgression,
     clearProgression,
     auditionShape,
+    auditionChord,
     playSinglePad,
   }
 
