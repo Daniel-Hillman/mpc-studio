@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   base: process.env.GITHUB_ACTIONS ? '/mpc-samplex/' : '/',
+  // The Claude preview harness assigns a port via the PORT env var.
+  server: process.env.PORT ? { port: Number(process.env.PORT), strictPort: true } : undefined,
   plugins: [
     react(),
     VitePWA({

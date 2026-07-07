@@ -1,0 +1,179 @@
+import { PadGrid } from '../components/PadGrid'
+import { ControlRow, Guide, PanelHeader, StatusStack } from '../components/primitives'
+import {
+  PAD_NUMBERS,
+  ROOT_NOTES,
+  formatSemitoneShift,
+  getScaleDefinition,
+  midiToNoteName,
+  midiToNoteWithOctave,
+  noteNameToMidi,
+  padToMidi,
+} from '../lib/music'
+import { useAppState } from '../state/AppStateProvider'
+import type { PadNumber } from '../types'
+
+export function LevelsPage() {
+  const {
+    keyRoot,
+    scaleType,
+    sampleRootMidi,
+    originalPad,
+    surfaceMode,
+    selectedShape,
+    pitchWindow,
+    scaleNotes,
+    safePads,
+    rootPads,
+    padHighlights,
+    otherSampleNote,
+    targetNote,
+    repitchShift,
+    setSampleRootMidi,
+    setOriginalPad,
+    setOtherSampleNote,
+    setTargetNote,
+    playSinglePad,
+  } = useAppState()
+
+  const onSampleRootChange = setSampleRootMidi
+  const onOriginalPadChange = setOriginalPad
+  const onOtherSampleNoteChange = setOtherSampleNote
+  const onTargetNoteChange = setTargetNote
+  const onSetTargetToKey = () => setTargetNote(keyRoot)
+  const onPlayPad = playSinglePad
+
+  const sampleNote = midiToNoteName(sampleRootMidi)
+  const scaleLabel = getScaleDefinition(scaleType).label
+  const nearestShift = `${repitchShift > 0 ? '+' : ''}${repitchShift} st`
+  const scalePadRows = scaleNotes.map((note) => {
+    const pads = PAD_NUMBERS.filter((pad) => midiToNoteName(padToMidi(sampleRootMidi, originalPad, pad)) === note)
+    return { note, pads }
+  })
+
+  return (
+    <section className="levels-layout">
+      <aside className="panel levels-setup">
+        <PanelHeader kicker="16 Levels / Scales" title="Scale setup" value={`${keyRoot} ${scaleLabel}`} />
+        <Guide title="Map a scale onto 16 Levels">
+          <p>The master key is set once in the top bar. This page maps that scale onto your 16 Levels sample note and original-pitch pad.</p>
+        </Guide>
+        <div className="master-key-readout">
+          <span>Master key</span>
+          <strong>{keyRoot} {scaleLabel}</strong>
+          <small>The highlighted pads below come from this key.</small>
+        </div>
+        <div className="helper-mini-row">
+          <ControlRow label="Sample note">
+            <select value={sampleNote} onChange={(event) => onSampleRootChange(noteNameToMidi(event.target.value, 3))}>
+              {ROOT_NOTES.map((note) => (
+                <option key={note} value={note}>
+                  {note}
+                </option>
+              ))}
+            </select>
+          </ControlRow>
+          <ControlRow label="Original pad">
+            <select value={originalPad} onChange={(event) => onOriginalPadChange(Number(event.target.value) as PadNumber)}>
+              {PAD_NUMBERS.map((pad) => (
+                <option key={pad} value={pad}>
+                  Pad {pad}
+                </option>
+              ))}
+            </select>
+          </ControlRow>
+        </div>
+        <StatusStack
+          items={[
+            { label: 'Window', value: `${midiToNoteWithOctave(pitchWindow.minMidi)} to ${midiToNoteWithOctave(pitchWindow.maxMidi)}` },
+            { label: 'Original', value: `${sampleNote} on Pad ${originalPad}` },
+            { label: 'Root pads', value: rootPads.length ? rootPads.map((pad) => `P${pad}`).join(', ') : 'not visible' },
+          ]}
+        />
+      </aside>
+
+      <div className="panel levels-pad-panel">
+        <PanelHeader
+          kicker={surfaceMode === 'keys' ? 'Scale keys' : 'Scale pads'}
+          title={surfaceMode === 'keys' ? 'Highlighted keyboard' : 'Highlighted 16 Levels'}
+          value={surfaceMode === 'keys' ? `${safePads.length} safe` : `${safePads.length} pads`}
+        />
+        <PadGrid
+          selectedShape={selectedShape}
+          pitchWindow={pitchWindow}
+          padHighlights={padHighlights}
+          highlightMode="scale"
+          surfaceMode={surfaceMode}
+          onPlayPad={onPlayPad}
+        />
+        <div className="legend helper-legend">
+          <span>Gold = scale root</span>
+          <span>Mint = in scale</span>
+          <span>Dashed = original pitch</span>
+          <span>Dark = outside scale</span>
+        </div>
+      </div>
+
+      <aside className="panel levels-notes">
+        <PanelHeader kicker="Notes" title={`${scaleNotes.length} notes in scale`} value={`${safePads.length} pads`} />
+        <div className="scale-note-list">
+          {scalePadRows.map((row) => (
+            <div className={row.pads.length ? 'scale-note-card visible' : 'scale-note-card missing'} key={row.note}>
+              <strong>{row.note}</strong>
+              <span>{row.pads.length ? row.pads.map((pad) => `P${pad}`).join(', ') : 'not in window'}</span>
+            </div>
+          ))}
+        </div>
+        <div className="result-box">
+          <strong>Quick use:</strong> Start on a gold root pad, make phrases with mint pads, and ignore dark pads unless you want outside tension.
+        </div>
+      </aside>
+
+      <section className="panel levels-retune">
+        <PanelHeader kicker="Retune" title="Repitch another one-shot" value={nearestShift} />
+        <div className="retune-grid">
+          <div className="result-box">
+            <strong>{`${otherSampleNote} -> ${targetNote}`}</strong>
+            <br />
+            {formatSemitoneShift(repitchShift)}. Use this as a starting point, then fine-tune by ear on the MPC.
+          </div>
+          <div className="helper-mini-row">
+            <ControlRow label="Detected note">
+              <select value={otherSampleNote} onChange={(event) => onOtherSampleNoteChange(event.target.value)}>
+                {ROOT_NOTES.map((note) => (
+                  <option key={note} value={note}>
+                    {note}
+                  </option>
+                ))}
+              </select>
+            </ControlRow>
+            <ControlRow label="Target note">
+              <select value={targetNote} onChange={(event) => onTargetNoteChange(event.target.value)}>
+                {ROOT_NOTES.map((note) => (
+                  <option key={note} value={note}>
+                    {note}
+                  </option>
+                ))}
+              </select>
+            </ControlRow>
+          </div>
+          <div className="pitch-list">
+            {[
+              ['Nearest shift', repitchShift],
+              ['Same note one octave up', repitchShift + 12],
+              ['Same note one octave down', repitchShift - 12],
+            ].map(([label, shift]) => (
+              <div className="pitch-row" key={label}>
+                <span>{label}</span>
+                <span className="pill">{Number(shift) > 0 ? '+' : ''}{shift} st</span>
+              </div>
+            ))}
+          </div>
+          <button type="button" className="secondary-action" onClick={onSetTargetToKey}>
+            Set target to track key
+          </button>
+        </div>
+      </section>
+    </section>
+  )
+}
