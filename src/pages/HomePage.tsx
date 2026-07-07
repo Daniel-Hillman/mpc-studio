@@ -115,7 +115,7 @@ export function HomePage() {
             }}
           >
             <span>1</span>
-            <strong>Find safe notes</strong>
+            <strong>Find in-scale notes</strong>
             <small>{safePads.length ? safePads.map((pad) => `P${pad}`).join(', ') : 'Move the original pad or sample note'}</small>
           </button>
           <button type="button" className="home-action-card" onClick={() => onNavigate('chords')}>
@@ -126,7 +126,7 @@ export function HomePage() {
           <button type="button" className="home-action-card" onClick={() => onNavigate('melodies')}>
             <span>3</span>
             <strong>Make a melody</strong>
-            <small>Home pads, strong pads, passing notes</small>
+            <small>Root, chord tone and passing pads</small>
           </button>
           <button type="button" className="home-action-card quiet" onClick={() => onNavigate('levels')}>
             <span>4</span>
@@ -148,7 +148,7 @@ export function HomePage() {
         <p className="panel-note">Change the key and sample once from the top bar - every page follows.</p>
         <div className="home-mode-grid">
           <button type="button" className={highlightMode === 'scale' ? 'primary-action' : 'secondary-action'} onClick={() => onHighlightModeChange('scale')}>
-            Safe pads
+            In-scale pads
           </button>
           <button type="button" className={highlightMode === 'chord' ? 'primary-action' : 'secondary-action'} onClick={() => onHighlightModeChange('chord')}>
             Chord pads
@@ -163,7 +163,7 @@ export function HomePage() {
         <PanelHeader
           kicker={surfaceMode === 'keys' ? 'Keyboard' : '16 Levels'}
           title={surfaceMode === 'keys' ? 'Keys to try now' : 'Pads to try now'}
-          value={`${safePads.length} safe`}
+          value={`${safePads.length} in scale`}
         />
         <PadGrid
           selectedShape={selectedShape}
@@ -177,7 +177,7 @@ export function HomePage() {
         <div className="helper-pad-actions">
           <button type="button" className="secondary-action" onClick={onAnimateSafePads} disabled={safePads.length === 0}>
             <Play size={18} />
-            <span>Flash safe notes</span>
+            <span>Flash in-scale notes</span>
           </button>
           <button type="button" className="secondary-action" onClick={onAnimateChordPads} disabled={chordPads.length === 0}>
             <Music size={18} />
@@ -237,7 +237,7 @@ export function HomePage() {
           <div className="result-box">
             <strong>Scale:</strong> {scaleNotes.join(', ')}
             <br />
-            <strong>Safe pads:</strong> {safePads.length ? safePads.map((pad) => `P${pad}`).join(', ') : 'none in this window'}
+            <strong>In-scale pads:</strong> {safePads.length ? safePads.map((pad) => `P${pad}`).join(', ') : 'none in this window'}
             <br />
             <strong>Root pads:</strong> {rootPads.length ? rootPads.map((pad) => `P${pad}`).join(', ') : 'none in this window'}
             {missingScaleNotes.length > 0 && (

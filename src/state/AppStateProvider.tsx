@@ -105,6 +105,7 @@ export interface AppState {
   auditionShape: (shape: ChordShape, strumMs?: number) => Promise<void>
   auditionChord: (root: string, quality: ChordQualityId, strumMs?: number) => Promise<void>
   playSinglePad: (pad: PadNumber) => Promise<void>
+  playPadSequence: (pads: PadNumber[], stepMs?: number) => Promise<void>
 }
 
 const AppStateContext = createContext<AppState | null>(null)
@@ -300,6 +301,20 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function playPadSequence(pads: PadNumber[], stepMs = 170) {
+    if (!previewEnabled || pads.length === 0) {
+      return
+    }
+
+    const audio = await ensureAudio()
+    pads.forEach((pad, index) => {
+      const midi = padToMidi(sampleRootMidi, originalPad, pad)
+      window.setTimeout(() => {
+        audio.playMidiNotes([midi], { duration: '8n', velocity: 0.72, strumMs: 0 })
+      }, index * stepMs)
+    })
+  }
+
   function setTrackKey(root: string) {
     setKeyRoot(root)
     setTargetNote(root)
@@ -460,6 +475,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     auditionShape,
     auditionChord,
     playSinglePad,
+    playPadSequence,
   }
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>

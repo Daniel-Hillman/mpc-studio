@@ -19,11 +19,15 @@ export function MelodiesPage() {
     melodyHighlights,
     animatedPads,
     playSinglePad,
+    playPadSequence,
     animatePads,
   } = useAppState()
 
   const onPlayPad = playSinglePad
-  const onAnimate = (pads: PadNumber[]) => animatePads(pads, 'melody')
+  const onAnimate = (pads: PadNumber[]) => {
+    animatePads(pads, 'melody')
+    void playPadSequence(pads)
+  }
 
   const scaleLabel = getScaleDefinition(scaleType).label
   const phraseRecipes = buildMelodyPhraseRecipes(melodyPads)

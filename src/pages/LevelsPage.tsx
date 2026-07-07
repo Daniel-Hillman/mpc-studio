@@ -68,7 +68,7 @@ export function LevelsPage() {
         <PanelHeader
           kicker={surfaceMode === 'keys' ? 'Scale keys' : 'Scale pads'}
           title={surfaceMode === 'keys' ? 'Highlighted keyboard' : 'Highlighted 16 Levels'}
-          value={surfaceMode === 'keys' ? `${safePads.length} safe` : `${safePads.length} pads`}
+          value={surfaceMode === 'keys' ? `${safePads.length} in scale` : `${safePads.length} pads`}
         />
         <PadGrid
           selectedShape={selectedShape}
@@ -92,7 +92,7 @@ export function LevelsPage() {
           ))}
         </div>
         <div className="result-box">
-          <strong>Quick use:</strong> Start on a gold root pad, make phrases with mint pads, and ignore dark pads unless you want outside tension.
+          <strong>Quick use:</strong> Start on a gold Root pad, build phrases on mint In-scale pads, and treat unmarked pads as Outside-scale color.
         </div>
       </aside>
 
