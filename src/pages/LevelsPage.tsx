@@ -1,4 +1,5 @@
 import { PadGrid } from '../components/PadGrid'
+import { RoleLegend } from '../components/RoleLegend'
 import { ControlRow, Guide, PanelHeader, StatusStack } from '../components/primitives'
 import {
   PAD_NUMBERS,
@@ -7,11 +8,9 @@ import {
   getScaleDefinition,
   midiToNoteName,
   midiToNoteWithOctave,
-  noteNameToMidi,
   padToMidi,
 } from '../lib/music'
 import { useAppState } from '../state/AppStateProvider'
-import type { PadNumber } from '../types'
 
 export function LevelsPage() {
   const {
@@ -29,15 +28,11 @@ export function LevelsPage() {
     otherSampleNote,
     targetNote,
     repitchShift,
-    setSampleRootMidi,
-    setOriginalPad,
     setOtherSampleNote,
     setTargetNote,
     playSinglePad,
   } = useAppState()
 
-  const onSampleRootChange = setSampleRootMidi
-  const onOriginalPadChange = setOriginalPad
   const onOtherSampleNoteChange = setOtherSampleNote
   const onTargetNoteChange = setTargetNote
   const onSetTargetToKey = () => setTargetNote(keyRoot)
@@ -56,40 +51,17 @@ export function LevelsPage() {
       <aside className="panel levels-setup">
         <PanelHeader kicker="16 Levels / Scales" title="Scale setup" value={`${keyRoot} ${scaleLabel}`} />
         <Guide title="Map a scale onto 16 Levels">
-          <p>The master key is set once in the top bar. This page maps that scale onto your 16 Levels sample note and original-pitch pad.</p>
+          <p>The master key and sample live in the top bar. This page maps that scale onto your 16 Levels pads.</p>
         </Guide>
-        <div className="master-key-readout">
-          <span>Master key</span>
-          <strong>{keyRoot} {scaleLabel}</strong>
-          <small>The highlighted pads below come from this key.</small>
-        </div>
-        <div className="helper-mini-row">
-          <ControlRow label="Sample note">
-            <select value={sampleNote} onChange={(event) => onSampleRootChange(noteNameToMidi(event.target.value, 3))}>
-              {ROOT_NOTES.map((note) => (
-                <option key={note} value={note}>
-                  {note}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-          <ControlRow label="Original pad">
-            <select value={originalPad} onChange={(event) => onOriginalPadChange(Number(event.target.value) as PadNumber)}>
-              {PAD_NUMBERS.map((pad) => (
-                <option key={pad} value={pad}>
-                  Pad {pad}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-        </div>
         <StatusStack
           items={[
+            { label: 'Key', value: `${keyRoot} ${scaleLabel}` },
             { label: 'Window', value: `${midiToNoteWithOctave(pitchWindow.minMidi)} to ${midiToNoteWithOctave(pitchWindow.maxMidi)}` },
             { label: 'Original', value: `${sampleNote} on Pad ${originalPad}` },
             { label: 'Root pads', value: rootPads.length ? rootPads.map((pad) => `P${pad}`).join(', ') : 'not visible' },
           ]}
         />
+        <p className="panel-note">The highlighted pads below come from this key.</p>
       </aside>
 
       <div className="panel levels-pad-panel">
@@ -106,12 +78,7 @@ export function LevelsPage() {
           surfaceMode={surfaceMode}
           onPlayPad={onPlayPad}
         />
-        <div className="legend helper-legend">
-          <span>Gold = scale root</span>
-          <span>Mint = in scale</span>
-          <span>Dashed = original pitch</span>
-          <span>Dark = outside scale</span>
-        </div>
+        <RoleLegend mode="scale" surface={surfaceMode} />
       </div>
 
       <aside className="panel levels-notes">

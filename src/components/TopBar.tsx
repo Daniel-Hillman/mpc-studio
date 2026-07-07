@@ -2,6 +2,7 @@ import { Play, Volume2 } from 'lucide-react'
 import { describeChord, midiToNoteWithOctave } from '../lib/music'
 import { useAppState } from '../state/AppStateProvider'
 import { MasterKeyControl } from './MasterKeyControl'
+import { SampleSetupControl } from './SampleSetupControl'
 import { SurfaceModeSwitch } from './primitives'
 
 export function TopBar() {
@@ -10,6 +11,9 @@ export function TopBar() {
     chordRoot,
     chordQuality,
     sampleRootMidi,
+    originalPad,
+    setSampleRootMidi,
+    setOriginalPad,
     project,
     surfaceMode,
     setSurfaceMode,
@@ -39,6 +43,12 @@ export function TopBar() {
           scaleLabel={scaleDefinition.label}
           onTrackKeyChange={setTrackKey}
           onScaleTypeChange={setScaleType}
+        />
+        <SampleSetupControl
+          sampleRootMidi={sampleRootMidi}
+          originalPad={originalPad}
+          onSampleRootChange={setSampleRootMidi}
+          onOriginalPadChange={setOriginalPad}
         />
       </div>
       {activeView !== 'chords' && (

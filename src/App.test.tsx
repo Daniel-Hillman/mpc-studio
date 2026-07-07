@@ -10,6 +10,7 @@ describe('MPC Samplex shell', () => {
     expect(screen.getByRole('button', { name: '16 Levels / Scales' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Melodies' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Master key C Minor/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Sample C3 · Pad 4/i })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Chord Pads' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Groove' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Library' })).not.toBeInTheDocument()
@@ -103,7 +104,9 @@ describe('MPC Samplex shell', () => {
     expect(screen.getByText('Melody notes')).toBeInTheDocument()
     expect(screen.getByText('Try these shapes')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Simple hook/i })).toBeInTheDocument()
-    expect(screen.getByText(/Gold = home/)).toBeInTheDocument()
+    expect(screen.getAllByText('Chord tone').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Passing').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('In scale').length).toBeGreaterThan(0)
   })
 
   it('keeps the 16 Levels page focused on scales and retuning', () => {
@@ -115,7 +118,24 @@ describe('MPC Samplex shell', () => {
     expect(screen.getByText('Highlighted 16 Levels')).toBeInTheDocument()
     expect(screen.getByText('7 notes in scale')).toBeInTheDocument()
     expect(screen.getByText('Repitch another one-shot')).toBeInTheDocument()
+    expect(screen.getByText('Outside scale')).toBeInTheDocument()
     expect(screen.queryByText('Best shapes')).not.toBeInTheDocument()
     expect(screen.queryByText('Chord')).not.toBeInTheDocument()
+  })
+
+  it('drives every page from the global sample control', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Sample C3 · Pad 4/i }))
+    const samplePanel = screen.getByRole('dialog', { name: 'Sample setup' })
+
+    fireEvent.change(within(samplePanel).getByRole('combobox', { name: 'Original pad' }), {
+      target: { value: '1' },
+    })
+
+    expect(screen.getByRole('button', { name: /Sample C3 · Pad 1/i })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: '16 Levels / Scales' }))
+    expect(screen.getByText('C3 to Eb4')).toBeInTheDocument()
   })
 })

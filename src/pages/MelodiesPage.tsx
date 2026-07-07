@@ -1,7 +1,8 @@
 import { PadGrid } from '../components/PadGrid'
-import { ControlRow, Guide, PanelHeader, StatusStack } from '../components/primitives'
+import { RoleLegend } from '../components/RoleLegend'
+import { Guide, PanelHeader, StatusStack } from '../components/primitives'
 import { buildMelodyPhraseRecipes } from '../lib/melodyPhrases'
-import { PAD_NUMBERS, ROOT_NOTES, getScaleDefinition, midiToNoteName, noteNameToMidi } from '../lib/music'
+import { getScaleDefinition, midiToNoteWithOctave } from '../lib/music'
 import { useAppState } from '../state/AppStateProvider'
 import type { MelodyPadRole, PadNumber } from '../types'
 
@@ -17,18 +18,13 @@ export function MelodiesPage() {
     melodyPads,
     melodyHighlights,
     animatedPads,
-    setSampleRootMidi,
-    setOriginalPad,
     playSinglePad,
     animatePads,
   } = useAppState()
 
-  const onSampleRootChange = setSampleRootMidi
-  const onOriginalPadChange = setOriginalPad
   const onPlayPad = playSinglePad
   const onAnimate = (pads: PadNumber[]) => animatePads(pads, 'melody')
 
-  const sampleNote = midiToNoteName(sampleRootMidi)
   const scaleLabel = getScaleDefinition(scaleType).label
   const phraseRecipes = buildMelodyPhraseRecipes(melodyPads)
   const roleCounts = melodyPads.reduce(
@@ -44,41 +40,19 @@ export function MelodiesPage() {
       <aside className="panel melody-setup">
         <PanelHeader kicker="1. Map" title="Melody setup" value={`${keyRoot} ${scaleLabel}`} />
         <Guide title="Find notes without theory">
-          <p>Use home and strong pads for anchors, safe pads for hooks, passing pads for movement, and tension pads only when you want grit.</p>
+          <p>Anchor on Root and Chord-tone pads, build hooks with In-scale pads, move through Passing pads quickly, and save Outside-scale pads for grit.</p>
         </Guide>
-        <div className="master-key-readout">
-          <span>Master key</span>
-          <strong>{keyRoot} {scaleLabel}</strong>
-          <small>Melody roles update everywhere from the top bar.</small>
-        </div>
-        <div className="helper-mini-row">
-          <ControlRow label="Sample note">
-            <select value={sampleNote} onChange={(event) => onSampleRootChange(noteNameToMidi(event.target.value, 3))}>
-              {ROOT_NOTES.map((note) => (
-                <option key={note} value={note}>
-                  {note}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-          <ControlRow label="Original pad">
-            <select value={originalPad} onChange={(event) => onOriginalPadChange(Number(event.target.value) as PadNumber)}>
-              {PAD_NUMBERS.map((pad) => (
-                <option key={pad} value={pad}>
-                  Pad {pad}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-        </div>
         <StatusStack
           items={[
-            { label: 'Home', value: `${roleCounts.home} pads` },
-            { label: 'Strong', value: `${roleCounts.strong} pads` },
-            { label: 'Safe', value: `${roleCounts.safe} pads` },
+            { label: 'Key', value: `${keyRoot} ${scaleLabel}` },
+            { label: 'Sample', value: `${midiToNoteWithOctave(sampleRootMidi)} on Pad ${originalPad}` },
+            { label: 'Root', value: `${roleCounts.home} pads` },
+            { label: 'Chord tone', value: `${roleCounts.strong} pads` },
+            { label: 'In scale', value: `${roleCounts.safe} pads` },
             { label: 'Passing', value: `${roleCounts.passing} pads` },
           ]}
         />
+        <p className="panel-note">Melody roles follow the master key in the top bar.</p>
       </aside>
 
       <div className="panel melody-pad-panel">
@@ -92,12 +66,7 @@ export function MelodiesPage() {
           animatedPads={animatedPads}
           onPlayPad={onPlayPad}
         />
-        <div className="legend helper-legend">
-          <span>Gold = home</span>
-          <span>Rose = strong</span>
-          <span>Mint = safe</span>
-          <span>Paper = passing</span>
-        </div>
+        <RoleLegend mode="melody" surface={surfaceMode} />
       </div>
 
       <aside className="panel melody-phrases">

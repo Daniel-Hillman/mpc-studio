@@ -1,18 +1,17 @@
 import { Music, Play, Volume2 } from 'lucide-react'
 import { PadGrid } from '../components/PadGrid'
+import { RoleLegend } from '../components/RoleLegend'
 import { ControlRow, PanelHeader, StatusStack } from '../components/primitives'
 import {
-  PAD_NUMBERS,
   ROOT_NOTES,
   describeChord,
   formatSemitoneShift,
   midiToNoteName,
   midiToNoteWithOctave,
-  noteNameToMidi,
   padToMidi,
 } from '../lib/music'
 import { useAppState } from '../state/AppStateProvider'
-import type { AudioFeel, InstrumentPreset, PadNumber } from '../types'
+import type { AudioFeel, InstrumentPreset } from '../types'
 
 const AUDIO_PRESETS: { value: InstrumentPreset; label: string }[] = [
   { value: 'warmKeys', label: 'Warm Keys' },
@@ -62,8 +61,6 @@ export function HomePage() {
     scaleNotes,
     repitchShift,
     animatedPads,
-    setSampleRootMidi,
-    setOriginalPad,
     setOtherSampleNote,
     setTargetNote,
     setHighlightMode,
@@ -78,8 +75,6 @@ export function HomePage() {
   } = useAppState()
 
   const scaleDefinitionLabel = scaleDefinition.label
-  const onSampleRootChange = setSampleRootMidi
-  const onOriginalPadChange = setOriginalPad
   const onOtherSampleNoteChange = setOtherSampleNote
   const onTargetNoteChange = setTargetNote
   const onSetTargetToKey = () => setTargetNote(keyRoot)
@@ -142,32 +137,15 @@ export function HomePage() {
       </section>
 
       <aside className="panel home-setup">
-        <PanelHeader kicker="Setup" title="Sample and master key" value={`${sampleNote} on Pad ${originalPad}`} />
-        <div className="master-key-readout">
-          <span>Master key</span>
-          <strong>{keyRoot} {scaleDefinitionLabel}</strong>
-          <small>Change it once from the top bar.</small>
-        </div>
-        <div className="helper-mini-row">
-          <ControlRow label="Sample note">
-            <select value={sampleNote} onChange={(event) => onSampleRootChange(noteNameToMidi(event.target.value, 3))}>
-              {ROOT_NOTES.map((note) => (
-                <option key={note} value={note}>
-                  {note}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-          <ControlRow label="Original pad">
-            <select value={originalPad} onChange={(event) => onOriginalPadChange(Number(event.target.value) as PadNumber)}>
-              {PAD_NUMBERS.map((pad) => (
-                <option key={pad} value={pad}>
-                  Pad {pad}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-        </div>
+        <PanelHeader kicker="Now" title="Current setup" value={`${sampleNote} on Pad ${originalPad}`} />
+        <StatusStack
+          items={[
+            { label: 'Key', value: `${keyRoot} ${scaleDefinitionLabel}` },
+            { label: 'Sample', value: `${midiToNoteWithOctave(sampleRootMidi)} on Pad ${originalPad}` },
+            { label: 'Window', value: `${midiToNoteWithOctave(pitchWindow.minMidi)} to ${midiToNoteWithOctave(pitchWindow.maxMidi)}` },
+          ]}
+        />
+        <p className="panel-note">Change the key and sample once from the top bar - every page follows.</p>
         <div className="home-mode-grid">
           <button type="button" className={highlightMode === 'scale' ? 'primary-action' : 'secondary-action'} onClick={() => onHighlightModeChange('scale')}>
             Safe pads
@@ -210,12 +188,7 @@ export function HomePage() {
             <span>Audition chord</span>
           </button>
         </div>
-        <div className="legend helper-legend">
-          <span>Gold = root</span>
-          <span>Mint = in key</span>
-          <span>Rose = chord</span>
-          <span>Dashed = original</span>
-        </div>
+        <RoleLegend mode={highlightMode === 'chord' ? 'chord' : 'scale'} surface={surfaceMode} />
       </div>
 
       <aside className="panel home-sound">

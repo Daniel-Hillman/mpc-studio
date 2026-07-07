@@ -12,7 +12,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
   padding: 0.85rem clamp(1rem, 3vw, 2rem);
   border-bottom: 2px solid var(--ink);
   background: var(--paper);
@@ -169,6 +170,8 @@ select:focus-visible {
 
 .topbar-actions {
   margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .surface-switch {
@@ -955,6 +958,60 @@ main {
   background: #f4ecdf;
   font-size: 0.8rem;
   font-weight: 700;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 2px;
+  border: 1px solid rgba(33, 27, 21, 0.35);
+  flex: none;
+}
+
+.legend-swatch.swatch-root {
+  background: var(--gold);
+}
+
+.legend-swatch.swatch-chord {
+  background: var(--rose);
+}
+
+.legend-swatch.swatch-scale {
+  background: var(--mint);
+}
+
+.legend-swatch.swatch-passing {
+  background: #f4ecdf;
+  border-style: dashed;
+  border-color: var(--line-strong);
+}
+
+.legend-swatch.swatch-outside {
+  background: #2d2a24;
+}
+
+.legend-swatch.swatch-original {
+  background: transparent;
+  border: 2px dashed var(--ink);
+}
+
+.legend-swatch.swatch-noPad {
+  background: #e6ded0;
+  opacity: 0.55;
+}
+
+.panel-note {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .result-box,

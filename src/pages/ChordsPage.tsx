@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Music } from 'lucide-react'
 import { PadGrid } from '../components/PadGrid'
+import { RoleLegend } from '../components/RoleLegend'
 import { ControlRow, Guide, PanelHeader, StatusStack } from '../components/primitives'
 import {
   buildCoachStageSuggestions,
@@ -13,7 +14,6 @@ import {
 } from '../lib/degrees'
 import {
   CHORD_DEFINITIONS,
-  PAD_NUMBERS,
   ROOT_NOTES,
   analyzeSixteenLevelsChord,
   describeChord,
@@ -24,11 +24,10 @@ import {
   intervalRoleLabel,
   midiToNoteName,
   midiToNoteWithOctave,
-  noteNameToMidi,
   rankLabel,
 } from '../lib/music'
 import { useAppState } from '../state/AppStateProvider'
-import type { ChordQualityId, PadNumber } from '../types'
+import type { ChordQualityId } from '../types'
 
 const QUALITY_OPTIONS = CHORD_DEFINITIONS.map((definition) => ({
   value: definition.id,
@@ -59,8 +58,6 @@ export function ChordsPage() {
     animatedPads,
     setChordRoot,
     setChordQuality,
-    setSampleRootMidi,
-    setOriginalPad,
     addChordToProgression,
     moveChordInProgression,
     removeChordFromProgression,
@@ -71,8 +68,6 @@ export function ChordsPage() {
 
   const onRootChange = setChordRoot
   const onQualityChange = setChordQuality
-  const onSampleRootChange = setSampleRootMidi
-  const onOriginalPadChange = setOriginalPad
   const onAddChord = addChordToProgression
   const onMoveChord = moveChordInProgression
   const onRemoveChord = removeChordFromProgression
@@ -116,40 +111,14 @@ export function ChordsPage() {
     <section className="chord-finder-layout">
       <aside className="panel chord-finder-setup">
         <PanelHeader kicker="1. Setup" title="Scale and sample" value={`${keyRoot} ${scaleLabel}`} />
-        <Guide title="Choose the musical map">
-          <p>The master key comes from the top bar. Here you only need the sample note and the MPC pad that holds the original pitch.</p>
-        </Guide>
-        <div className="master-key-readout">
-          <span>Master key</span>
-          <strong>{keyRoot} {scaleLabel}</strong>
-          <small>All chord degrees below follow this key.</small>
-        </div>
-        <div className="helper-mini-row">
-          <ControlRow label="Sample note">
-            <select value={sampleNote} onChange={(event) => onSampleRootChange(noteNameToMidi(event.target.value, 3))}>
-              {ROOT_NOTES.map((note) => (
-                <option key={note} value={note}>
-                  {note}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-          <ControlRow label="Original pad">
-            <select value={originalPad} onChange={(event) => onOriginalPadChange(Number(event.target.value) as PadNumber)}>
-              {PAD_NUMBERS.map((pad) => (
-                <option key={pad} value={pad}>
-                  Pad {pad}
-                </option>
-              ))}
-            </select>
-          </ControlRow>
-        </div>
         <StatusStack
           items={[
+            { label: 'Key', value: `${keyRoot} ${scaleLabel}` },
             { label: 'Window', value: `${midiToNoteWithOctave(pitchWindow.minMidi)} to ${midiToNoteWithOctave(pitchWindow.maxMidi)}` },
             { label: 'Original', value: `${sampleNote} on Pad ${originalPad}` },
           ]}
         />
+        <p className="panel-note">All chord degrees follow the master key. Change key and sample from the top bar.</p>
       </aside>
 
       <div className="panel chord-finder-palette">
@@ -263,6 +232,7 @@ export function ChordsPage() {
             <span>Add {describeChord(chordRoot, chordQuality)}</span>
           </button>
         </div>
+        <RoleLegend mode="chord" surface={surfaceMode} />
       </div>
 
       <aside className="panel chord-finder-recipe">

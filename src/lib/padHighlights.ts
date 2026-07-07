@@ -7,6 +7,7 @@ import {
   padToMidi,
   pitchClass,
 } from './music'
+import { melodyRoleFaceWord } from './vocabulary'
 import type { ChordQualityId, ChordShape, MelodyPad, MelodyPadRole, PadNumber, PitchWindow } from '../types'
 
 export type PadHighlight = {
@@ -85,7 +86,7 @@ export function buildMelodyHighlights(melodyPads: MelodyPad[], originalPad: PadN
         isRoot: pad.role === 'home',
         isChord: pad.role === 'strong',
         isOriginal: pad.pad === originalPad,
-        chordRole: pad.role,
+        chordRole: melodyRoleFaceWord(pad.role),
         melodyRole: pad.role,
       }
       return map
