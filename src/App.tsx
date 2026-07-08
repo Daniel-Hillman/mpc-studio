@@ -1,8 +1,9 @@
-import { Music, SlidersHorizontal, Square } from 'lucide-react'
+import { AudioWaveform, Music, SlidersHorizontal, Square } from 'lucide-react'
 import './App.css'
 import { TopBar } from './components/TopBar'
 import { ChordsPage } from './pages/ChordsPage'
 import { HomePage } from './pages/HomePage'
+import { KeyFinderPage } from './pages/KeyFinderPage'
 import { LevelsPage } from './pages/LevelsPage'
 import { MelodiesPage } from './pages/MelodiesPage'
 import { AppStateProvider, useAppState, type ViewId } from './state/AppStateProvider'
@@ -12,6 +13,7 @@ const VIEW_ITEMS: { id: ViewId; label: string; icon: typeof Music }[] = [
   { id: 'chords', label: 'Chords', icon: SlidersHorizontal },
   { id: 'melodies', label: 'Melodies', icon: Music },
   { id: 'levels', label: '16 Levels / Scales', icon: Square },
+  { id: 'keyfinder', label: 'Key Finder', icon: AudioWaveform },
 ]
 
 function Shell() {
@@ -43,6 +45,7 @@ function Shell() {
         {activeView === 'chords' && <ChordsPage />}
         {activeView === 'melodies' && <MelodiesPage />}
         {activeView === 'levels' && <LevelsPage />}
+        {activeView === 'keyfinder' && <KeyFinderPage />}
       </main>
     </div>
   )

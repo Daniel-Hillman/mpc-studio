@@ -44,7 +44,7 @@ import type {
   SurfaceMode,
 } from '../types'
 
-export type ViewId = 'studio' | 'chords' | 'melodies' | 'levels'
+export type ViewId = 'studio' | 'chords' | 'melodies' | 'levels' | 'keyfinder'
 
 export interface AppState {
   activeView: ViewId

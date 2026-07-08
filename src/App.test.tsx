@@ -127,6 +127,18 @@ describe('MPC Samplex shell', () => {
     expect(screen.queryByText('Chord')).not.toBeInTheDocument()
   })
 
+  it('offers the Key Finder with a local-analysis drop zone', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Key Finder' }))
+
+    expect(screen.getByText('Find the key of a sample')).toBeInTheDocument()
+    expect(screen.getByText(/Drop a sample or song here/)).toBeInTheDocument()
+    expect(screen.getByText(/analyzed locally, nothing is uploaded/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Choose audio file/i })).toBeInTheDocument()
+    expect(screen.getByText(/treat this as a strong suggestion/)).toBeInTheDocument()
+  })
+
   it('drives every page from the global sample control', () => {
     render(<App />)
 
