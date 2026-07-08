@@ -2,6 +2,7 @@ import { Music, Play, Volume2 } from 'lucide-react'
 import { PadGrid } from '../components/PadGrid'
 import { RoleLegend } from '../components/RoleLegend'
 import { ControlRow, PanelHeader, StatusStack } from '../components/primitives'
+import { PRESET_DEFINITIONS, PRESET_ORDER } from '../lib/audioPresets'
 import {
   ROOT_NOTES,
   describeChord,
@@ -13,14 +14,10 @@ import {
 import { useAppState } from '../state/AppStateProvider'
 import type { AudioFeel, InstrumentPreset } from '../types'
 
-const AUDIO_PRESETS: { value: InstrumentPreset; label: string }[] = [
-  { value: 'warmKeys', label: 'Warm Keys' },
-  { value: 'lushPad', label: 'Lush Pad' },
-  { value: 'dustyEp', label: 'Dusty EP' },
-  { value: 'softPluck', label: 'Soft Pluck' },
-  { value: 'deepBass', label: 'Deep Bass' },
-  { value: 'cleanSine', label: 'Clean Sine' },
-]
+const AUDIO_PRESETS: { value: InstrumentPreset; label: string }[] = PRESET_ORDER.map((id) => ({
+  value: id,
+  label: PRESET_DEFINITIONS[id].label,
+}))
 
 const AUDIO_FEELS: { value: AudioFeel; label: string }[] = [
   { value: 'tight', label: 'Tight' },

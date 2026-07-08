@@ -186,7 +186,15 @@ export interface ProgressionPlaybookStep {
   melodyPads: MelodyPad[]
 }
 
-export type InstrumentPreset = 'warmKeys' | 'lushPad' | 'dustyEp' | 'softPluck' | 'deepBass' | 'cleanSine'
+export type InstrumentPreset =
+  | 'warmKeys'
+  | 'lushPad'
+  | 'dustyEp'
+  | 'softPluck'
+  | 'deepBass'
+  | 'cleanSine'
+  | 'glassBells'
+  | 'warmBrass'
 export type AudioFeel = 'tight' | 'natural' | 'loose'
 export type SurfaceMode = 'pads' | 'keys'
 
